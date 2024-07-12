@@ -38,8 +38,8 @@ In addition to the recordings, patient data included additional information such
 - demographics, medical history, symptoms;
 - metadata such as age, gender, presence of comorbidities (e.g., asthma, COPD, pulmonary fibrosis) and smoking.
 
-Distribution of users in the asthmatic group.</br>
-![asthmatic_users.png](images%2Fasthmatic_users.png)
+Distribution of users in the asthmatic group:</br>
+<img src="images/asthmatic_users.jpg" width="800">
 
 ## Recording filtration
 
