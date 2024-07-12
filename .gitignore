@@ -1,0 +1,9 @@
+*.idea
+/prediction/data/**/*.csv
+/prediction/data/**/*.pk
+/prediction/data/tensorboard/
+/prediction/data/train/
+/prediction/image_model/images/
+/prediction/image_model/logs/
+/prediction/vggish/vggish_model.ckpt
+/prediction/data/data_params.py

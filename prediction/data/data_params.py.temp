@@ -1,0 +1,7 @@
+"""
+Global parameters for the data.
+
+"""
+
+CSV_DATA_SAMPLES = r''
+DATA_SAMPLES = r''

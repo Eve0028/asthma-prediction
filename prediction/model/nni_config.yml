@@ -1,0 +1,59 @@
+experimentName: my_experiment
+trialConcurrency: 1
+trialCommand: python model_train_vad.py
+trialCodeDirectory: .
+trialGpuNumber: 1
+nniManagerTimeout: 60
+tuner:
+  name: TPE
+  classArgs:
+    optimize_mode: maximize
+trainingService:
+  platform: local
+  useActiveGpu: True
+searchSpace:
+  lr1:
+    _type: choice
+    _value: [1e-5, 1e-4, 1e-3]
+  lr2:
+    _type: choice
+    _value: [1e-4, 1e-3, 1e-2]
+  lr_decay:
+    _type: choice
+    _value: [0.8, 0.9, 0.99]
+  reg_l2:
+    _type: choice
+    _value: [1e-7, 1e-5, 1e-3]
+  dropout_rate:
+    _type: choice
+    _value: [0.3, 0.5, 0.7]
+  num_units:
+    _type: choice
+    _value: [32, 64, 128, 256]
+  trained_layers:
+    _type: choice
+    _value: [0, 5, 9]
+
+#searchSpace:
+#  lr1:
+#    _type: loguniform
+#    _value: [1e-5, 1e-3]
+#  lr2:
+#    _type: loguniform
+#    _value: [1e-4, 1e-2]
+#  lr_decay:
+#    _type: uniform
+#    _value: [0.8, 0.999]
+#  reg_l2:
+#    _type: uniform
+#    _value: [1e-7, 1e-3]
+#  dropout_rate:
+#    _type: uniform
+#    _value: [0.2, 0.8]
+#  num_units:
+#    _type: choice
+#    _value: [32, 64, 128, 256]
+#  trained_layers:
+#    _type: choice
+#    _value: [0, 5, 9]
+
