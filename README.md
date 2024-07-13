@@ -72,7 +72,7 @@ It was decided that samples with a sampling rate less than 16 kHz would be disca
 </br>Number of asthmatics: **2,387 (approx. 8.5%)**.
 
 Distribution of users in the asthmatic group:</br>
-<img src="images/asthmatic_users.jpg" width="800">
+<img src="images/asthmatic_users.jpg" width="700">
 
 ### First attempt 
 
@@ -119,7 +119,7 @@ The last of these ('sub-sample') if too short - is omitted.
 The structure of the models comes from a paper called *COVID-19 Sounds: A Large-Scale Audio Dataset for Digital Respiratory Screening*. 
 Instead of using three different types of recordings (cough, breath and voice) - only breath was used for asthma detection in the current project.</br>
 All the models tested have the same architecture with a different base model.</br>
-<img src="images/model_architecture.jpg" width="550">
+<img src="images/model_architecture.jpg" width="760">
 
 From a single breath sample, a few dozen `sub-samples` (96x64 spectrogram) of data are produced for input to the model.
 The model makes one prediction from all `sub-samples` from one patient - by pooling all extracted features through the base model before sending them to the Dense layers (for prediction). 
