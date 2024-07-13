@@ -8,12 +8,13 @@ from __future__ import print_function
 
 import sys
 
-import model_params as params
 import tensorflow as tf
 import tf_slim as slim
 
-sys.path.append("../vggish")
+import model_params as params
 import prediction.vggish.vggish_slim  # noqa: E402
+
+sys.path.append("../vggish")
 
 
 def define_audio_slim(
@@ -41,7 +42,8 @@ def define_audio_slim(
         The op 'mymodel/logits'.
     """
 
-    embeddings = prediction.vggish.vggish_slim.define_vggish_slim(train_vgg)  # (? x 128) vggish is the pre-trained model
+    embeddings = prediction.vggish.vggish_slim.define_vggish_slim(
+        train_vgg)  # (? x 128) vggish is the pre-trained model
     print("model summary:", train_vgg)
 
     with slim.arg_scope(
@@ -52,7 +54,6 @@ def define_audio_slim(
             biases_initializer=tf.compat.v1.zeros_initializer(),
             weights_regularizer=tf.keras.regularizers.l2(0.5 * (reg_l2)),
     ), tf.compat.v1.variable_scope("mymodel"):
-
         # index = tf.compat.v1.placeholder(dtype=tf.int32, shape=(1, 1), name="index")  # split B C V
         # index2 = tf.compat.v1.placeholder(dtype=tf.int32, shape=(1, 1), name="index2")
         dropout_keep_prob = tf.compat.v1.placeholder(tf.float32, name="dropout_rate")

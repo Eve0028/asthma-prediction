@@ -3,7 +3,6 @@
 
 """
 Global parameters for the model.
-
 """
 
 from os.path import join as pjoin

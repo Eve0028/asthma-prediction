@@ -7,24 +7,22 @@ Created on Wed Sep  9 17:18:28 2020
 """
 from __future__ import print_function
 
+import os  # noqa: E402
+import sys  # noqa: E402
 import random
 
 import joblib
 import numpy as np
 import pandas as pd
+import librosa
 from sklearn import metrics
 
-SR = 16000  # sample rate
-import os  # noqa: E402
-import sys  # noqa: E402
-
-import librosa  # noqa: E402
 import model_params as params  # noqa: E402
+from prediction.vggish.vggish_input import waveform_to_examples  # noqa: E402
 
 sys.path.append("../vggish")
 
-from prediction.vggish.vggish_input import waveform_to_examples  # noqa: E402
-
+SR = 16000  # sample rate
 SR_VGG = params.SR_VGG
 
 

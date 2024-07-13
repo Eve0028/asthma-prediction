@@ -5,7 +5,6 @@ Created on Sun Aug 22 22:45:18 2021
 @author: xiato
 """
 
-
 from collections import Counter
 
 import pandas as pd
@@ -13,7 +12,6 @@ import pandas as pd
 import data_params as params
 
 df = pd.read_csv(params.CSV_DATA_SAMPLES, sep=";")
-
 
 df_train_pos = df[(df["split"] == 2) & (df["label"] == 0)]
 df_train_pos = df_train_pos[["Uid", "Sex", "Age"]].drop_duplicates(keep="first")

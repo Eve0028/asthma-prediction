@@ -77,7 +77,6 @@ for index, row in df.iterrows():
                 }
             )
 
-
 f = open("audio_0124_asthma.pk", "wb")
 joblib.dump(data_all_asthma, f)
 f.close()

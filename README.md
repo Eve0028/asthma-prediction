@@ -7,7 +7,36 @@ The project was done for a graduate engineering thesis.
 
 The sound of breathing recorded at the patient's mouth contains a lot of information that can be used to diagnose respiratory diseases. The project seeks to test whether the presence of asthma can be diagnosed using it. The model was trained on a sizable database of sound data (4,774) collected from asthmatics (2,387) and people without the disease (2,387). The sound files were recorded on users' equipment - [see datasource](#data-source).
 
-## Data Configuration
+## Data Source
+
+This project was developed using data from the University of Cambridge (project on COVID-19 diagnosis using cough, breath, and speech recordings). You can find the repository [here](https://github.com/cam-mobsys/covid19-sounds-neurips).
+
+In addition to the recordings, patient data included additional information such as:
+- demographics, medical history, symptoms;
+- metadata such as age, gender, presence of comorbidities (e.g., asthma, COPD, pulmonary fibrosis) and smoking.
+
+## Setup
+
+The models were trained on Windows on the GPU.
+Quoting from the official TensorFlow website:
+</br>"TensorFlow 2.10 was the last TensorFlow release that supported GPU on native-Windows."</br>
+Using WSL2 was not an option, so I stayed with the versions: TensorFlow2.10 and Python3.10 (the latest version compatible with tf2.10).
+
+### Create environment
+- Conda <br>
+`conda env create -n asthma-prediction --file asthma-prediction.yml`
+<br><br>
+- Virtual env <br>
+  - Unix/macOS: <br>
+  `python3 -m venv .venv` <br>
+  `source .venv/bin/activate` <br>
+  `python3 -m pip install -r requirements.txt`
+  - Windows: <br>
+  `py -m venv .venv` <br>
+  `.venv\bin\Activate.bat` <br>
+  `py -m pip install -r requirements.txt`
+
+### Data configuration
 
 To set up the project data, you need to add a few files that are not included in the repository due to size or confidentiality reasons. Instructions below:
 
@@ -30,17 +59,6 @@ To set up the project data, you need to add a few files that are not included in
 4. **vggish_model.ckpt**
     - Add the file with weights `vggish_model.ckpt` for the [VGGish](https://github.com/tensorflow/models/tree/master/research/audioset/vggish) model to the 'prediction/vggish' or/and 'prediction/my_vggish_model' folder.
 
-## Data Source
-
-This project was developed using data from the University of Cambridge (project on COVID-19 diagnosis using cough, breath, and speech recordings). You can find the repository [here](https://github.com/cam-mobsys/covid19-sounds-neurips).
-
-In addition to the recordings, patient data included additional information such as:
-- demographics, medical history, symptoms;
-- metadata such as age, gender, presence of comorbidities (e.g., asthma, COPD, pulmonary fibrosis) and smoking.
-
-Distribution of users in the asthmatic group:</br>
-<img src="images/asthmatic_users.jpg" width="800">
-
 ## Recording filtration
 
 There were several recordings of the same patient in the data set (the development of the disease was examined over several days). It was decided to take only one sample from such a set. The main reasons are:
@@ -52,6 +70,9 @@ The dataset came from many platforms (browser application, Android and iOS) - th
 It was decided that samples with a sampling rate less than 16 kHz would be discarded. The rest of the recordings were converted to 16 kHz.
 </br>Number of all recordings after initial filtering: 28,034.
 </br>Number of asthmatics: **2,387 (approx. 8.5%)**.
+
+Distribution of users in the asthmatic group:</br>
+<img src="images/asthmatic_users.jpg" width="800">
 
 ### First attempt 
 
@@ -80,9 +101,6 @@ A larger dropout and L2 regularization were also tested.</br>
 Such narrowing of the data also limits the deployability of the model and its use to only those who meet the above criteria. 
 **Always train the network on data as close as possible to the data for which the model will be designed.** 
 
-As I expected - the results did not improve significantly - reaching less than 60% accuracy and AUC (and an even lower f1-score) -ᴖ-.</br>
-Nevertheless (hoping that the calculations are correct) I have at least partially proved that asthma treatment is effective! :D 
-
 ## Preprocessing
 The networks were trained on log mel spectrograms, which represent the amplitude of a signal in the time and frequency domains.
 Audio conversion to the model is as follows: 
@@ -101,7 +119,7 @@ The last of these ('sub-sample') if too short - is omitted.
 The structure of the models comes from a paper called *COVID-19 Sounds: A Large-Scale Audio Dataset for Digital Respiratory Screening*. 
 Instead of using three different types of recordings (cough, breath and voice) - only breath was used for asthma detection in the current project.</br>
 All the models tested have the same architecture with a different base model.</br>
-![model_architecture.jpg](images%2Fmodel_architecture.jpg)
+<img src="images/model_architecture.jpg" width="550">
 
 From a single breath sample, a few dozen `sub-samples` (96x64 spectrogram) of data are produced for input to the model.
 The model makes one prediction from all `sub-samples` from one patient - by pooling all extracted features through the base model before sending them to the Dense layers (for prediction). 
@@ -116,7 +134,7 @@ The model makes one prediction from all `sub-samples` from one patient - by pool
 
 #### Tuned:
 - base learning rate - for the base (pre-trained) model,
-- upper learning rate - for attached fully connected classification layers,
+- top learning rate - for attached fully connected classification layers,
 - learning rate decay,
 - L2 regularization,
 - dropout,
@@ -135,6 +153,7 @@ The model makes one prediction from all `sub-samples` from one patient - by pool
 - TPR, TNR,
 - F1-Score,
 - AUC,
+- CombinedTPRTNR - additional metric taking into account TPR and TNR (also present in the COVID-19 prediction study) - mainly used as an argument for early stopping: $\frac{TPR\ +\ TNR}{2}$.
 
 ## Models
 Folder structure in `prediction` directory.
@@ -148,7 +167,7 @@ VGGish model - files can be found [here](https://github.com/tensorflow/models/tr
 ### model
 The VGGish model was used as the base model and feature extractor.
 Modified code from [original repo](https://github.com/cam-mobsys/covid19-sounds-neurips):
-- originally a TensorFlow1 was used - modification to properly fires on the TensorFlow2 version (tf.compat.v1, etc.).
+- originally a TensorFlow1 was used - modification to properly fires on the TensorFlow2 version (tf.compat.v1, etc.),
 - modification of the model architecture to accept a sample type with one recording/modality (breath) instead of three.
 
 ### my_image_model
@@ -181,11 +200,40 @@ Functionality used:
 - addition of TimeDistributed layers - also for Dense layers, 
 - tf.data API: 
   - use of generator to create samples of different sizes in batch (different number of 'sub-samples' in one signal), 
-  - definition of sample in batch as [None, sample_width, sample_height] - so that the graph does not require retracing. 
+  - definition of sample in batch as [None, sample_width, sample_height] - so that the graph does not require retracing,
   - use of prefetch - step time reduction. 
+
+## Results
+
+### Best hyper-parameters
+<img src="images/best-hyper-parameters.png" width="550">
+
+### Metrics plots
+
+#### VGGish
+<img src="images/VGGish_metrics_plots.png" width="650" title="VGGish metrics plots">
+
+#### ResNet50
+<img src="images/ResNet50_metrics_plots.png" width="650" title="ResNet50 metrics plots">
+
+#### DenseNet121
+<img src="images/DenseNet121_metrics_plots.png" width="650" title="DenseNet121 metrics plots">
+
+### Model results
+<img src="images/model-prediction-test-results.png" width="500" title="Model results">
+
+As I expected - the results did not improve significantly (in the second attempt) - reaching less than 60% accuracy and AUC (and an even lower f1-score) (っ˘̩╭╮˘̩)っ.
+Nevertheless (hoping that the calculations are correct) I have at least partially proved that asthma treatment is effective! :D
+
+#### ROC-AUC - VGGish
+
+<img src="images/ROC-AUC_curve_VGGish.png" width="420" title="Model results"></br>
+It would be worthwhile to reduce the threshold value for classifying samples into the diseased class, whose error in classification has greater negative consequences. With a threshold value of 0.15, the value of the metrics would be as follows: FPR: 0.57, TPR: 0.72.
 
 ## Worth adding 
 - Frequency filtering of recordings (breathing sounds heard from the patient's mouth have a frequency range: 200-2000 Hz).
 - Using all samples from healthy subjects, rather than discarding them in favor of matching their number to the minority class size - and assigning them weights accordingly to reduce the effect of unbalanced classes (sample weighting in the loss function).
 - Distributing the classes (sick/healthy) in an 8:92 ratio in the validation and test sets, or using cross-validation (and stratified sampling).
-- Equal distribution of patients into the appropriate classes taking into account the same: age range, gender, language (although it may not necessarily matter much for breath sounds) and other additional patient information. Which will minimize the impact of bias on the results. 
+- Equal distribution of patients into the appropriate classes taking into account the same: age range, gender, language (although it may not necessarily matter much for breath sounds) and other additional patient information. Which will minimize the impact of bias in the results. 
+- Using Optuna or NNI (attempts were made) instead of grid search.
+- Audio data augmentation.

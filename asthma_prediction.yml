@@ -1,0 +1,17 @@
+name: asthma_prediction
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python==3.10
+  - tensorflow<2.11
+  - numpy
+  - pandas
+  - joblib
+  - librosa
+  - tf_slim
+  - matplotlib
+  - seaborn
+  - scikit-learn
+  - scikit-image
+  - pysoundfile

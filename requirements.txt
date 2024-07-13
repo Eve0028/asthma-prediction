@@ -1,0 +1,12 @@
+python==3.10
+tensorflow<2.11
+numpy
+pandas
+joblib
+librosa
+tf-slim
+matplotlib
+seaborn
+scikit-learn
+scikit-image
+soundfile

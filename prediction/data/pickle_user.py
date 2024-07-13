@@ -10,7 +10,6 @@ import pandas as pd
 
 import data_params as params
 
-
 user_all = {
     "train_asthma_id": [],
     "vad_asthma_id": [],
@@ -49,7 +48,6 @@ for index, row in df.iterrows():
 
     if UID not in user_all[fold]:
         user_all[fold].append(UID)
-
 
 for f in user_all:
     print(f, len(user_all[f]))

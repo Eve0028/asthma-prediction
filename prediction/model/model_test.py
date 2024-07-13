@@ -7,14 +7,20 @@ Created on Wed OCt 9 17:18:28 2020
 """
 from __future__ import print_function
 
+import sys  # noqa: E402
 import argparse
 import os
 import random
+import warnings  # noqa: E402
 
 import numpy as np
 import tensorflow as tf
 import tf_slim as slim
 
+import model_params as params  # noqa: E402
+import model_util as util  # noqa: E402
+from model_network import define_audio_slim  # noqa: E402
+from prediction.vggish.vggish_slim import load_vggish_slim_checkpoint  # noqa: E402
 
 SEED = 123
 random.seed(SEED)
@@ -22,16 +28,7 @@ np.random.seed(SEED)
 os.environ["PYTHONHASHSEED"] = str(SEED)
 tf.compat.v1.set_random_seed(SEED)
 
-import sys  # noqa: E402
-
-import model_params as params  # noqa: E402
-import model_util as util  # noqa: E402
-from model_network import define_audio_slim  # noqa: E402
-
 sys.path.append("../vggish")
-import warnings  # noqa: E402
-
-from prediction.vggish.vggish_slim import load_vggish_slim_checkpoint  # noqa: E402
 
 warnings.filterwarnings("ignore")
 tf.compat.v1.logging.set_verbosity(tf.compat.v1.logging.DEBUG)

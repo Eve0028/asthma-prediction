@@ -1,4 +1,5 @@
 import tensorflow as tf
+
 from load_data import load_data
 from model import get_model
 from params import early_stop_patience, initial_epochs, number_of_finetune_layers, max_epochs, signals_data_dir, \
@@ -23,9 +24,9 @@ class CombinedTPRTNR(tf.keras.metrics.Metric):
 
     def result(self):
         tpr = self.true_positives.result() / (
-                    self.true_positives.result() + self.false_negatives.result() + tf.keras.backend.epsilon())
+                self.true_positives.result() + self.false_negatives.result() + tf.keras.backend.epsilon())
         tnr = self.true_negatives.result() / (
-                    self.true_negatives.result() + self.false_positives.result() + tf.keras.backend.epsilon())
+                self.true_negatives.result() + self.false_positives.result() + tf.keras.backend.epsilon())
         return 0.5 * (tpr + tnr)
 
     def reset_states(self):
@@ -70,7 +71,6 @@ history = time_distributed_vggish.fit(
     validation_steps=steps_per_epoch_val,
     callbacks=[early_stopping]
 )
-
 
 # Unfreeze specified number of layers
 # (plus the last 4 TimeDistributed layers +2 for pooling and softmax at the end) for fine-tuning

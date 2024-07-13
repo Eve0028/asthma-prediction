@@ -5,6 +5,7 @@ import logging.config
 
 import numpy as np
 import tensorflow as tf
+# TensorFlow Addons has stopped development. Minimal maintenance releases until May 2024.
 import tensorflow_addons as tfa
 
 from prediction.my_image_model.image_model import architecture
